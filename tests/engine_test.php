@@ -77,6 +77,25 @@ check(count(times($sent, 'review')) === 1, 'sunday weekly review: ' . json_encod
 check(count(times($sent, 'pin')) >= 12, 'pinned today: ' . count(times($sent, 'pin')));
 check(count(times($sent, 'wake')) === 0, 'no 7:00 siren because he was up');
 
+
+// pulse: a fresh line every 15 min, only while awake
+$pl = array_values(array_filter($sent, fn($p) => $p['kind'] === 'pulse'));
+$pt = array_map(fn($p) => $p['ts'], $pl);
+$upAt = (int) day_row($date)['up_at'];
+$bedAt = (int) day_row($date)['bed_at'];
+check(count($pl) >= 40 && count($pl) <= 75, 'pulses while awake: ' . count($pl));
+check(min($pt) >= $upAt + 14 * 60, 'first pulse is 15 min after I am up: ' . hm(min($pt)) . ' vs up ' . hm($upAt));
+check(max($pt) < local_ts($date, setting('night_start')) && max($pt) < $bedAt, 'no pulse after bedtime reminders start: last ' . hm(max($pt)));
+$gaps = [];
+for ($i = 1; $i < count($pt); $i++) $gaps[] = intdiv($pt[$i] - $pt[$i - 1], 60);
+check(min($gaps) >= 15, 'pulse gap never under 15 min: min ' . min($gaps));
+check(count(array_unique(array_column($pl, 'title'))) >= 8, 'pulse titles vary: ' . count(array_unique(array_column($pl, 'title'))));
+$bodies = array_column($pl, 'body');
+check(count($bodies) === count(array_unique($bodies)), 'no pulse line repeats in a day');
+$focus = count(array_unique(array_map(fn($p) => preg_replace('/\d+/', '#', $p['title']), $pl)));
+echo "pulse samples:\n";
+foreach ([0, 5, 17, 33, 50] as $i) if (isset($pl[$i])) echo "  [" . hm($pl[$i]['ts']) . "] {$pl[$i]['title']} | " . str_replace("\n", " / ", mb_substr($pl[$i]['body'], 0, 110)) . "\n";
+
 // quote repetition
 $q = array_filter(array_column($sent, 'qid'));
 $dups = count($q) - count(array_unique($q));

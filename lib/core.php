@@ -68,7 +68,7 @@ const DEFAULTS = [
     'office_start' => '08:00', 'office_end' => '17:30', 'off_days' => '5,6',           // Fri, Sat
     'night_start' => '22:00', 'office_wake' => '07:00', 'pin_every_min' => '120',
     'norepeat_days' => '30', 'masjid_on' => '1', 'site_url' => 'https://app.kwisdomacademy.com',
-    'goal_steps' => '10000', 'goal_weight_kg' => '15', 'goal_date' => '2026-11-30',
+    'pulse_on' => '1', 'pulse_every_min' => '15', 'goal_steps' => '10000', 'goal_weight_kg' => '15', 'goal_date' => '2026-11-30',
 ];
 
 function setting(string $k, ?string $default = null): ?string

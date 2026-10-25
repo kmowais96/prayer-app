@@ -331,6 +331,8 @@ function viewSettings() {
     <label for="office_end">Office ends</label><input id="office_end" type="time" value="${esc(st.office_end)}">
     <label for="office_wake">Must be up by (office days)</label><input id="office_wake" type="time" value="${esc(st.office_wake)}">
     <label for="night_start">Bedtime reminders start</label><input id="night_start" type="time" value="${esc(st.night_start)}">
+    <div class="toggle"><span>Fresh reminder every few minutes while awake</span><input type="checkbox" id="pulse_on" ${st.pulse_on === '1' ? 'checked' : ''}></div>
+    <label for="pulse_every_min">Reminder every (minutes)</label><input id="pulse_every_min" type="number" inputmode="numeric" min="10" value="${esc(st.pulse_every_min)}">
     <label for="pin_every_min">Re-send the Today notification every (minutes)</label><input id="pin_every_min" type="number" inputmode="numeric" min="15" value="${esc(st.pin_every_min)}">
     <label for="goal_steps">Daily steps goal</label><input id="goal_steps" type="number" inputmode="numeric" value="${esc(st.goal_steps)}">
     <label for="norepeat_days">Do not repeat a quote for (days)</label><input id="norepeat_days" type="number" inputmode="numeric" value="${esc(st.norepeat_days)}">
@@ -540,8 +542,8 @@ document.addEventListener('click', async (e) => {
       }, () => toast('Location was not allowed'), { enableHighAccuracy: false, timeout: 15000 });
       break;
     case 'savesched': {
-      const body = { asr_factor: $('#hanafi').checked ? 2 : 1, masjid_on: $('#masjid').checked ? 1 : 0 };
-      for (const k of ['office_start', 'office_end', 'office_wake', 'night_start', 'pin_every_min', 'goal_steps', 'norepeat_days']) body[k] = $('#' + k).value;
+      const body = { asr_factor: $('#hanafi').checked ? 2 : 1, masjid_on: $('#masjid').checked ? 1 : 0, pulse_on: $('#pulse_on').checked ? 1 : 0 };
+      for (const k of ['office_start', 'office_end', 'office_wake', 'night_start', 'pin_every_min', 'pulse_every_min', 'goal_steps', 'norepeat_days']) body[k] = $('#' + k).value;
       await act('/settings', body, 'Saved.');
       break;
     }

@@ -400,6 +400,108 @@ function tick_pinned(int $now, string $date): void
     day_set($date, ['pin_last' => $now, 'pin_dirty' => 0]);
 }
 
+
+// ---------- pulse: a fresh line every 15 minutes while awake ----------
+
+/** Awake = tapped "I am up" today (or the Sleep Focus-off shortcut), not yet in bed, before bedtime reminders start. */
+function pulse_awake(int $now, string $date): bool
+{
+    $d = day_row($date);
+    if (!$d['up_at'] || $d['bed_at']) return false;
+    return $now < local_ts($date, setting('night_start'));
+}
+
+/** Everything a pulse could be about right now. Each has a stable key so they can be rotated fairly. */
+function pulse_foci(string $date, int $now): array
+{
+    $f = [];
+    $w = prayer_windows($date);
+    foreach (PRAYERS as $p) {
+        [$a, $b] = $w[$p];
+        $r = prayer_row($date, $p);
+        $label = prayer_label($p, $date);
+        if ($now >= $a && $now < $b && $r && $r['status'] === 'pending') {
+            $f['prayer'] = ['title' => "Have you prayed $label?", 'body' => 'The time ends in ' . fmt_min(intdiv($b - $now, 60)) . '.',
+                'ctx' => ['salah', 'time'], 'tier' => 2];
+            break;
+        }
+        if ($now < $a) {
+            $f['prayer'] = ['title' => "$label in " . fmt_min(intdiv($a - $now, 60)), 'body' => 'At ' . hm($a) . '. Be ready before the adhan.',
+                'ctx' => ['salah', 'time'], 'tier' => 1];
+            break;
+        }
+    }
+    $cfg = [];
+    foreach (tasks_cfg() as $t) $cfg[$t['key']] = $t;
+    $st = db()->prepare("SELECT * FROM tasks WHERE date=? AND done=0 AND key NOT IN ('tahajjud','steps10k')");
+    $st->execute([$date]);
+    foreach ($st->fetchAll() as $r) {
+        $t = $cfg[$r['key']] ?? null;
+        if (!$t) continue;
+        $at = task_time($t, $date);
+        $later = $at && $now < local_ts($date, $at);
+        $f['task:' . $r['key']] = [
+            'title' => ($later ? 'Today at ' . $at . ': ' : 'Now: ') . $r['label'],
+            'body' => pulse_line($later ? ['Put the time aside before it arrives.', 'Clear the way for it now, so nothing else takes the slot.', 'Decide where and how you will do it.', 'Tell yourself the plan once, then keep it.']
+                : ['Ten minutes is enough to start.', 'Open it now. The start is the hard part.', 'Phone down, one thing in front of you.', 'Do it before the next prayer, not after.'], $now),
+            'ctx' => array_merge($t['ctx'] ?? ['task'], ['task']),
+            'tier' => clamp(1 + intdiv((int) $r['sent'], 2) + (int) $r['notyet'], 1, 4), 'task' => $r['key'],
+        ];
+    }
+    $day = day_row($date);
+    $goal = (int) setting('goal_steps');
+    $steps = (int) ($day['steps'] ?? 0);
+    if ($steps < $goal) {
+        $f['steps'] = ['title' => 'Steps: ' . number_format($steps) . ' of ' . number_format($goal),
+            'body' => number_format($goal - $steps) . ' to go. ' . pulse_line(['A short walk, with dhikr.', 'Go outside. Fresh air and a lecture.', 'Walk to the shop or the masjid instead of sitting.', 'Stand, stretch, walk a lap.'], $now), 'ctx' => ['steps'], 'tier' => 2];
+    }
+    $f['time'] = ['title' => 'Make this hour count', 'body' => pulse_line(['What is the one thing worth finishing before the next prayer?', 'This hour will not come back. What is it for?', 'Close what distracts you. Do the one that matters.', 'Small steps today are the life you are building.'], $now),
+        'ctx' => ['time', 'deeds'], 'tier' => 2];
+    return $f;
+}
+
+function pulse_line(array $opts, int $now): string
+{
+    return $opts[intdiv($now, 900) % count($opts)];
+}
+
+function fmt_min(int $m): string
+{
+    $m = max(0, $m);
+    return $m >= 60 ? intdiv($m, 60) . ' h ' . ($m % 60) . ' min' : $m . ' min';
+}
+
+function tick_pulse(int $now, string $date): void
+{
+    if (setting('pulse_on') !== '1' || !pulse_awake($now, $date)) return;
+    $every = max(10, (int) setting('pulse_every_min')) * 60;
+    $day = day_row($date);
+    $last = max((int) setting('pulse_last', '0'), (int) $day['up_at']);
+    if ($now < $last + $every) return;
+    // Never stack on top of another push in the last 4 minutes (a prayer call, a task); retry next minute.
+    if ((int) db()->query('SELECT COALESCE(MAX(ts),0) FROM pushes WHERE kind<>\'pulse\'')->fetchColumn() > $now - 240) return;
+    $foci = pulse_foci($date, $now);
+    if (!$foci) return;
+    $hist = json_decode(setting('pulse_hist', '[]'), true) ?: [];
+    if (isset($foci['prayer']) && !in_array('prayer', array_slice($hist, -3), true)) {
+        $key = 'prayer';
+    } else {
+        $key = null; $oldest = PHP_INT_MAX;
+        foreach (array_keys($foci) as $k) {
+            $pos = array_search($k, array_reverse($hist), true);
+            $age = $pos === false ? PHP_INT_MAX : $pos;      // never used, or how many pulses ago
+            if ($key === null || $age > $oldest) { $key = $k; $oldest = $age; }
+        }
+    }
+    $p = $foci[$key];
+    if (notify('pulse', 'pulse', $p['title'], $p['ctx'], $p['tier'], ['essential' => true, 'body' => $p['body'], 'ttl' => 900])) {
+        $hist[] = $key;
+        set_setting('pulse_hist', json_encode(array_slice($hist, -12)));
+        set_setting('pulse_last', (string) $now);
+        if (!empty($p['task'])) db()->prepare('UPDATE tasks SET sent=sent+1 WHERE date=? AND key=?')->execute([$date, $p['task']]);
+    }
+}
+
 // ---------- tick ----------
 
 function engine_tick(?int $now = null): void
@@ -416,6 +518,7 @@ function engine_tick(?int $now = null): void
         fn() => tick_tasks($now, $date),
         fn() => tick_steps($now, $date),
         fn() => tick_weekly($now, $date),
+        fn() => tick_pulse($now, $date),
         fn() => tick_pinned($now, $date),
     ];
     foreach ($steps as $i => $s) {
