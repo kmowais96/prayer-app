@@ -7,7 +7,7 @@ require __DIR__ . '/../lib/engine.php';
 
 $sent = [];
 $GLOBALS['PUSH_SINK'] = function (array $p) use (&$sent) { $sent[] = $p; return 1; };
-set_setting('tz', 'Asia/Riyadh');
+set_setting('tz', 'Asia/Kuwait');
 
 $fails = 0;
 function check(bool $ok, string $msg): void { global $fails; echo ($ok ? "ok   " : "FAIL ") . $msg . "\n"; if (!$ok) $fails++; }
@@ -91,7 +91,9 @@ for ($i = 1; $i < count($pt); $i++) $gaps[] = intdiv($pt[$i] - $pt[$i - 1], 60);
 check(min($gaps) >= 15, 'pulse gap never under 15 min: min ' . min($gaps));
 check(count(array_unique(array_column($pl, 'title'))) >= 8, 'pulse titles vary: ' . count(array_unique(array_column($pl, 'title'))));
 $bodies = array_column($pl, 'body');
+$dupb = array_values(array_filter(array_count_values(array_filter($bodies)), fn($c) => $c > 1));
 check(count($bodies) === count(array_unique($bodies)), 'no pulse line repeats in a day');
+if ($dupb) { echo "  repeated bodies:\n"; foreach (array_count_values(array_filter($bodies)) as $b => $c) if ($c > 1) echo "   x$c " . str_replace("\n", " / ", mb_substr($b, 0, 90)) . "\n"; }
 $focus = count(array_unique(array_map(fn($p) => preg_replace('/\d+/', '#', $p['title']), $pl)));
 echo "pulse samples:\n";
 foreach ([0, 5, 17, 33, 50] as $i) if (isset($pl[$i])) echo "  [" . hm($pl[$i]['ts']) . "] {$pl[$i]['title']} | " . str_replace("\n", " / ", mb_substr($pl[$i]['body'], 0, 110)) . "\n";

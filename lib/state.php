@@ -5,7 +5,7 @@ require_once __DIR__ . '/engine.php';
 
 function public_settings(): array
 {
-    $keys = ['lat', 'lng', 'tz', 'asr_factor', 'office_start', 'office_end', 'off_days', 'night_start', 'office_wake',
+    $keys = ['lat', 'lng', 'tz', 'asr_factor', 'calc_method', 'office_start', 'office_end', 'off_days', 'night_start', 'office_wake',
              'pin_every_min', 'pulse_on', 'pulse_every_min', 'masjid_on', 'goal_steps', 'goal_weight_kg', 'goal_date', 'norepeat_days', 'location_set'];
     $o = [];
     foreach ($keys as $k) $o[$k] = setting($k);

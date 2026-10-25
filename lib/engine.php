@@ -38,6 +38,8 @@ function task_time(array $t, string $date): ?string
 function ensure_day(string $date): void
 {
     $db = db();
+    $day = day_row($date);
+    if ($day['seen_ts'] === null) day_set($date, ['seen_ts' => app_now()]);
     $ins = $db->prepare('INSERT OR IGNORE INTO prayers(date,prayer) VALUES(?,?)');
     foreach (PRAYERS as $p) $ins->execute([$date, $p]);
     $it = $db->prepare('INSERT OR IGNORE INTO tasks(date,key,label) VALUES(?,?,?)');
@@ -55,14 +57,39 @@ function ensure_day(string $date): void
  * Compose and send one notification. Non-essential ones are held back during office hours.
  * Returns true when it was sent (or attempted), so callers can advance their own timers.
  */
+/**
+ * A locked iPhone shows about 30 characters of title and two short lines of body.
+ * Past that the phone cuts mid-word, so cut here instead, on a word, and keep the
+ * useful half first. These are the only length rules in the app.
+ */
+const T_MAX = 32;
+const B_MAX = 110;
+
+function cap(string $s, int $max): string
+{
+    $s = trim(preg_replace('/\s+/', ' ', $s));
+    if (mb_strlen($s) <= $max) return $s;
+    $cut = mb_substr($s, 0, $max - 1);
+    $sp = mb_strrpos($cut, ' ');
+    $end = ($sp !== false && $sp > $max / 2) ? $sp : $max - 1;
+    return rtrim(mb_substr($cut, 0, $end), " ,.;:") . '…';
+}
+
 function notify(string $kind, string $tag, string $title, array $ctx, int $tier, array $o = []): bool
 {
     $now = app_now();
     if (empty($o['essential']) && in_office_hours($now)) return false;
-    $q = ($o['quote'] ?? true) ? pick_quote($ctx, $tier, $now) : null;
-    $body = $o['body'] ?? '';
+    $title = cap($title, $o['tmax'] ?? T_MAX);
+    $body = cap((string) ($o['body'] ?? ''), B_MAX);
+    // A quote only rides along when it fits in what is left of the two body lines.
+    // That is what keeps a reminder readable at a glance instead of a wall of text.
+    $q = null;
+    if ($o['quote'] ?? true) {
+        $room = ($o['qmax'] ?? B_MAX) - ($body === '' ? 0 : mb_strlen($body) + 1);
+        if ($room >= 45) $q = pick_quote($ctx, $tier, $now, $room);
+    }
     if ($q) {
-        $b = quote_body($q);
+        $b = quote_body($q, max(45, ($o['qmax'] ?? B_MAX) - ($body === '' ? 0 : mb_strlen($body) + 1)));
         $body = $body !== '' ? $body . "\n" . $b : $b;
         quote_mark_sent($q['id'], $kind, $tier, $now);
     }
@@ -131,9 +158,16 @@ function tick_prayers(int $now, string $date, bool $create): void
                 continue;
             }
             if ($now >= $end) {
-                prayer_update($date, $p, ['status' => 'missed', 'end_sent' => 1, 'last_push' => $now]);
-                notify('missed', $tag, "$label time has ended", ['qada'], 3,
-                    ['essential' => true, 'body' => 'Pray it now as qada, then tell the app.', 'url' => "/#/pray/$p"]);
+                // The window has closed. If he was never asked inside it - a fresh install, or the
+                // cron was down - there is nothing to escalate. Record the gap, say nothing: a push
+                // about this morning's Fajr arriving in the evening is noise, not a reminder.
+                $asked = (int) $row['sent'] > 0;
+                prayer_update($date, $p, ['status' => 'missed', 'end_sent' => $asked ? 1 : 0,
+                    'qada_sent' => $asked ? (int) $row['qada_sent'] : 2, 'last_push' => $now]);
+                if ($asked) {
+                    notify('missed', $tag, "$label time has ended", ['qada'], 3,
+                        ['essential' => true, 'body' => 'Pray it as qada now, then tap it in.', 'url' => "/#/pray/$p"]);
+                }
                 continue;
             }
             // inside the window: nag until confirmed
@@ -149,10 +183,10 @@ function tick_prayers(int $now, string $date, bool $create): void
             }
             if ($due) {
                 $tier = prayer_tier($elapsed, (int) $row['notyet']);
-                $mins = intdiv($elapsed, 60);
-                $title = $sent === 0 ? "$label: time to pray" : "$label: $mins min since adhan";
+                // Time left, not time gone: a closing window moves a person, a counter does not.
+                $title = $sent === 0 ? "$label: time to pray" : "$label ends in " . fmt_min(intdiv($end - $now, 60));
                 $ctx = $p === 'fajr' ? ['fajr', 'wake', 'sleep', 'salah', 'time'] : ['salah', 'time', 'jamaah'];
-                $body = $sent === 0 ? '' : "Did you pray $label? Tap to answer.";
+                $body = $sent === 0 ? '' : 'Wudu, pray, then tap it in.';
                 notify('prayer', $tag, $title, $ctx, $tier, ['essential' => true, 'body' => $body, 'url' => "/#/pray/$p", 'ttl' => 240]);
                 prayer_update($date, $p, ['sent' => $sent + 1, 'last_push' => $now]);
             }
@@ -161,8 +195,11 @@ function tick_prayers(int $now, string $date, bool $create): void
 
         if ($row['status'] === 'missed') {
             $n = (int) $row['qada_sent'];
-            if ($n < 2 && $now >= $end + ($n + 1) * 900) {
-                notify('qada', $tag, "$label is still unpaid", ['qada', 'salah'], 3 + $n, ['essential' => true, 'url' => "/#/pray/$p"]);
+            // Two reminders, inside two hours of the window closing. After that it is history,
+            // and history belongs on the review screen, not on the lock screen.
+            if ($n < 2 && $now >= $end + ($n + 1) * 900 && $now < $end + 7200) {
+                notify('qada', $tag, "$label is still unpaid", ['qada', 'salah'], 3 + $n,
+                    ['essential' => true, 'body' => 'Pray it now, then tap it in.', 'url' => "/#/pray/$p"]);
                 prayer_update($date, $p, ['qada_sent' => $n + 1]);
             }
             continue;
@@ -307,8 +344,12 @@ function tick_steps(int $now, string $date): void
     $steps = (int) ($day['steps'] ?? 0);
     if ($steps >= $goal) return;
     $slots = is_off_day($date) ? STEP_SLOTS_OFF : STEP_SLOTS_OFFICE;
+    // Only the latest slot that is due matters. Skipping straight to it means a day first
+    // seen in the evening gets one step reminder, not one for every slot it slept through.
+    $last = -1;
+    foreach ($slots as $i => [$hm,]) if ($now >= local_ts($date, $hm)) $last = $i;
     foreach ($slots as $i => [$hm, $target]) {
-        if ($i <= (int) $day['steps_slot'] || $now < local_ts($date, $hm)) continue;
+        if ($i !== $last || $i <= (int) $day['steps_slot']) continue;
         day_set($date, ['steps_slot' => $i]);
         if ($steps < $target) {
             $left = number_format(max(0, $goal - $steps));
@@ -369,20 +410,21 @@ function today_summary(string $date, int $now): array
     $short = ['fajr' => 'F', 'dhuhr' => 'D', 'asr' => 'A', 'maghrib' => 'M', 'isha' => 'I'];
     $title = [];
     $prayed = 0;
-    $next = null;
-    $w = prayer_windows($date);
     foreach (PRAYERS as $p) {
         $r = prayer_row($date, $p);
         $ok = $r && in_array($r['status'], ['prayed', 'qada'], true);
         $miss = $r && $r['status'] === 'missed';
         $title[] = $short[$p] . ($ok ? '✓' : ($miss ? '✗' : '○'));
         if ($ok) $prayed++;
-        if (!$next && $now < $w[$p][0]) $next = [$p, $w[$p][0]];
     }
+    $pf = prayer_focus($date, $now);
     $t = db()->prepare('SELECT SUM(done) d, COUNT(*) n FROM tasks WHERE date=? AND key NOT IN (\'tahajjud\')');
     $t->execute([$date]);
     $tt = $t->fetch();
-    $line = ($next ? prayer_label($next[0], $date) . ' in ' . max(0, intdiv($next[1] - $now, 60)) . ' min · ' : '') . 'Tasks ' . (int) $tt['d'] . '/' . (int) $tt['n'];
+    $head = $pf['state'] === 'due'
+        ? $pf['label'] . ' now'
+        : $pf['label'] . ' ' . ($pf['state'] === 'tomorrow' ? hm($pf['start']) : 'in ' . fmt_min(intdiv($pf['start'] - $now, 60)));
+    $line = $head . ' · Tasks ' . (int) $tt['d'] . '/' . (int) $tt['n'];
     return ['title' => implode(' ', $title), 'line' => $line, 'prayed' => $prayed];
 }
 
@@ -401,36 +443,122 @@ function tick_pinned(int $now, string $date): void
 }
 
 
-// ---------- pulse: a fresh line every 15 minutes while awake ----------
+// ---------- pulse: a fresh line every few minutes while awake ----------
 
-/** Awake = tapped "I am up" today (or the Sleep Focus-off shortcut), not yet in bed, before bedtime reminders start. */
-function pulse_awake(int $now, string $date): bool
+/**
+ * The prayer the clock is actually on right now. Three states:
+ *   due      - the window is open and he has not confirmed it
+ *   soon     - the next adhan today
+ *   tomorrow - after Isha has begun and every window today is settled
+ * It is never a prayer whose time has already gone. That was the "Fajr at 6pm" bug.
+ */
+function prayer_focus(string $date, int $now): array
 {
-    $d = day_row($date);
-    if (!$d['up_at'] || $d['bed_at']) return false;
-    return $now < local_ts($date, setting('night_start'));
-}
-
-/** Everything a pulse could be about right now. Each has a stable key so they can be rotated fairly. */
-function pulse_foci(string $date, int $now): array
-{
-    $f = [];
     $w = prayer_windows($date);
     foreach (PRAYERS as $p) {
         [$a, $b] = $w[$p];
+        if ($now >= $b) continue;                       // gone: never speak about it again
         $r = prayer_row($date, $p);
-        $label = prayer_label($p, $date);
-        if ($now >= $a && $now < $b && $r && $r['status'] === 'pending') {
-            $f['prayer'] = ['title' => "Have you prayed $label?", 'body' => 'The time ends in ' . fmt_min(intdiv($b - $now, 60)) . '.',
-                'ctx' => ['salah', 'time'], 'tier' => 2];
-            break;
+        if ($now >= $a) {
+            if ($r && $r['status'] === 'pending') {
+                return ['p' => $p, 'label' => prayer_label($p, $date), 'state' => 'due', 'start' => $a, 'end' => $b];
+            }
+            continue;                                   // already prayed or recorded: look further ahead
         }
-        if ($now < $a) {
-            $f['prayer'] = ['title' => "$label in " . fmt_min(intdiv($a - $now, 60)), 'body' => 'At ' . hm($a) . '. Be ready before the adhan.',
-                'ctx' => ['salah', 'time'], 'tier' => 1];
-            break;
-        }
+        return ['p' => $p, 'label' => prayer_label($p, $date), 'state' => 'soon', 'start' => $a, 'end' => $b];
     }
+    $tom = add_days($date, 1);
+    $f = prayer_windows($tom)['fajr'];
+    return ['p' => 'fajr', 'label' => 'Fajr', 'state' => 'tomorrow', 'start' => $f[0], 'end' => $f[1]];
+}
+
+/**
+ * When he is awake, without needing him to tap anything.
+ * Best signal first: he tapped "I am up"; else he prayed Fajr in the app; else presume the
+ * usual waking hour (later on a day off). Ends when he taps "I am in bed", or at bedtime.
+ */
+function awake_window(string $date, int $now): array
+{
+    $d = day_row($date);
+    $until = $d['bed_at'] ? (int) $d['bed_at'] : local_ts($date, setting('night_start'));
+    if ($d['up_at']) return [(int) $d['up_at'], $until];
+    $fajr = prayer_row($date, 'fajr');
+    if ($fajr && $fajr['prayed_at']) return [(int) $fajr['prayed_at'], $until];
+    $presume = local_ts($date, setting('office_wake')) + (is_off_day($date) ? 7200 : 0);
+    return [$presume, $until];
+}
+
+function pulse_awake(int $now, string $date): bool
+{
+    [$from, $until] = awake_window($date, $now);
+    return $now >= $from && $now < $until;
+}
+
+/**
+ * The $n-th phrasing for a focus, or null once its phrasings are used up for the day.
+ * Null is the signal to let a quote carry the line instead, which is what keeps "a new line
+ * every time" true: the inline action lines are finite, the quote library is not.
+ */
+function rot(array $opts, int $n): ?string
+{
+    return $n < count($opts) ? $opts[$n] : null;
+}
+
+/** "40 min", "1 h 20 min", "4 h" - past two hours the minutes stop mattering. */
+function fmt_min(int $m): string
+{
+    $m = max(0, $m);
+    if ($m < 60) return $m . ' min';
+    $h = intdiv($m, 60);
+    $r = $m % 60;
+    return ($r && $h < 2) ? $h . ' h ' . $r . ' min' : $h . ' h';
+}
+
+/**
+ * Everything a pulse could be about right now, keyed so they can be rotated fairly.
+ * $used says how many times each focus has already spoken today, so each one works through
+ * its phrasings before handing over to the quote library.
+ *
+ * Every line is written as an implementation intention - when, where, how - because a specific
+ * next action is what moves a person. "Be productive" does not.
+ */
+function pulse_foci(string $date, int $now, array $used = []): array
+{
+    $f = [];
+    $n = fn(string $k) => (int) ($used[$k] ?? 0);
+
+    $pf = prayer_focus($date, $now);
+    $near = $pf['state'] === 'due' || $pf['state'] === 'tomorrow' || $pf['start'] - $now <= 5400;
+    if ($near && $pf['state'] === 'due') {
+        $left = intdiv($pf['end'] - $now, 60);
+        $f['prayer'] = [
+            'title' => $pf['label'] . ': ' . fmt_min($left) . ' left',
+            'body' => rot(['Stop, wudu, pray. Then come back to this.', 'Go now. It gets heavier the longer you sit.',
+                'Phone down, wudu, pray. Two minutes to start.', 'Pray it before you do anything else.',
+                'Leave what you are on. It will wait.', 'Masjid if you can, home if you cannot. Now either way.'], $n('prayer')),
+            'ctx' => ['salah', 'time'], 'tier' => $left < 20 ? 4 : 2, 'url' => '/#/pray/' . $pf['p'],
+        ];
+    } elseif ($near && $pf['state'] === 'soon') {
+        $in = intdiv($pf['start'] - $now, 60);
+        $f['prayer'] = [
+            'title' => $pf['label'] . ' in ' . fmt_min($in),
+            'body' => $in <= 20
+                ? 'At ' . hm($pf['start']) . '. Wudu now, be ready before the adhan.'
+                : 'At ' . hm($pf['start']) . '. ' . (rot(['Finish what you are on before then.', 'Plan to be at the masjid, not on the way.',
+                    'Leave the last ten minutes free.', 'Decide now what you finish before it.',
+                    'Wrap up early and go with time to spare.'], $n('prayer')) ?? 'Be ready before the adhan.'),
+            'ctx' => ['salah', 'time'], 'tier' => 1, 'url' => '/#/today',
+        ];
+    } elseif ($near) {
+        $f['prayer'] = [
+            'title' => 'Fajr ' . hm($pf['start']) . ' tomorrow',
+            'body' => rot(['Sleep early tonight and you win the morning.', 'Phone on charge away from the bed.',
+                'Set nothing else. Just be up for it.', 'The day starts there. Protect it.',
+                'Witr, then sleep. Nothing after that.'], $n('prayer')),
+            'ctx' => ['fajr', 'sleep', 'night'], 'tier' => 2, 'url' => '/#/today',
+        ];
+    }
+
     $cfg = [];
     foreach (tasks_cfg() as $t) $cfg[$t['key']] = $t;
     $st = db()->prepare("SELECT * FROM tasks WHERE date=? AND done=0 AND key NOT IN ('tahajjud','steps10k')");
@@ -438,65 +566,110 @@ function pulse_foci(string $date, int $now): array
     foreach ($st->fetchAll() as $r) {
         $t = $cfg[$r['key']] ?? null;
         if (!$t) continue;
+        $key = 'task:' . $r['key'];
         $at = task_time($t, $date);
         $later = $at && $now < local_ts($date, $at);
-        $f['task:' . $r['key']] = [
-            'title' => ($later ? 'Today at ' . $at . ': ' : 'Now: ') . $r['label'],
-            'body' => pulse_line($later ? ['Put the time aside before it arrives.', 'Clear the way for it now, so nothing else takes the slot.', 'Decide where and how you will do it.', 'Tell yourself the plan once, then keep it.']
-                : ['Ten minutes is enough to start.', 'Open it now. The start is the hard part.', 'Phone down, one thing in front of you.', 'Do it before the next prayer, not after.'], $now),
+        // Nine tasks share one phrasing list, so a per-task list would collide across tasks.
+        // Each task gets its one specific instruction, then hands over to the quote library,
+        // which is where "a new line every time" actually comes from.
+        $line = $n($key) > 0 ? null
+            : ($later ? 'Keep ' . $at . ' free for it. Decide now where you will sit.'
+                      : 'Ten minutes, starting now. Phone in another room.');
+        // "Read Seerah — not done" fits; "Follow your doctor's diet plan — not done" does not,
+        // and a title cut mid-word reads like a bug. The body already says what to do.
+        $nowTitle = mb_strlen($r['label']) + 6 <= T_MAX ? $r['label'] . ' — now' : $r['label'];
+        $f[$key] = [
+            'title' => $later ? $at . ': ' . $r['label'] : $nowTitle,
+            'body' => $line,
             'ctx' => array_merge($t['ctx'] ?? ['task'], ['task']),
-            'tier' => clamp(1 + intdiv((int) $r['sent'], 2) + (int) $r['notyet'], 1, 4), 'task' => $r['key'],
+            'tier' => clamp(1 + intdiv((int) $r['sent'], 2) + (int) $r['notyet'], 1, 4), 'task' => $r['key'], 'url' => '/#/tasks',
         ];
     }
+
     $day = day_row($date);
     $goal = (int) setting('goal_steps');
     $steps = (int) ($day['steps'] ?? 0);
     if ($steps < $goal) {
-        $f['steps'] = ['title' => 'Steps: ' . number_format($steps) . ' of ' . number_format($goal),
-            'body' => number_format($goal - $steps) . ' to go. ' . pulse_line(['A short walk, with dhikr.', 'Go outside. Fresh air and a lecture.', 'Walk to the shop or the masjid instead of sitting.', 'Stand, stretch, walk a lap.'], $now), 'ctx' => ['steps'], 'tier' => 2];
+        $line = rot(['Walk 20 minutes after the next prayer.', 'Go outside now with a lecture on.',
+            'Walk to the masjid instead of driving.', 'Stand up and do one lap now.',
+            'Park further away and walk the rest.'], $n('steps'));
+        $f['steps'] = [
+            'title' => 'Steps ' . number_format($steps) . ' / ' . number_format($goal),
+            'body' => $line === null ? null : number_format($goal - $steps) . ' to go. ' . $line,
+            'ctx' => ['steps'], 'tier' => 2, 'url' => '/#/today',
+        ];
     }
-    $f['time'] = ['title' => 'Make this hour count', 'body' => pulse_line(['What is the one thing worth finishing before the next prayer?', 'This hour will not come back. What is it for?', 'Close what distracts you. Do the one that matters.', 'Small steps today are the life you are building.'], $now),
-        'ctx' => ['time', 'deeds'], 'tier' => 2];
+
+    $kg = (float) setting('goal_weight_kg');
+    $target = $kg > 0 ? '-' . rtrim(rtrim(number_format($kg, 1), '0'), '.') . ' kg by ' . setting('goal_date') : '';
+    $f['goal'] = [
+        'title' => rot(['Why you started', 'The goal, out loud', 'Remember the target', 'Keep the aim in view'], $n('goal') % 4),
+        'body' => rot([
+            $target !== '' ? $target . '. Earned this hour, not next month.' : 'Your goal is earned this hour, not next month.',
+            'Prayer on time, food as the doctor said, body moving. Today.',
+            'One hour done well, five times a day. That is the whole plan.',
+            'You are building the man you will be in a year.',
+            'Nobody else is going to do this for you.',
+        ], $n('goal')),
+        'ctx' => ['deeds', 'time', 'dunya'], 'tier' => 2, 'url' => '/#/today',
+    ];
+
+    $f['time'] = [
+        'title' => rot(['Make this hour count', 'What is this hour for?', 'One thing, finished', 'Use it before it goes'], $n('time') % 4),
+        'body' => rot(['Name the one thing you finish before the next adhan.', 'Close what distracts you. Start the one that matters.',
+            'This hour does not come back. Spend it on purpose.', 'Pick one task and finish it, not three and none.',
+            'Choose the hard one first. The rest gets easy.'], $n('time')),
+        'ctx' => ['time', 'deeds'], 'tier' => 2, 'url' => '/#/today',
+    ];
     return $f;
-}
-
-function pulse_line(array $opts, int $now): string
-{
-    return $opts[intdiv($now, 900) % count($opts)];
-}
-
-function fmt_min(int $m): string
-{
-    $m = max(0, $m);
-    return $m >= 60 ? intdiv($m, 60) . ' h ' . ($m % 60) . ' min' : $m . ' min';
 }
 
 function tick_pulse(int $now, string $date): void
 {
     if (setting('pulse_on') !== '1' || !pulse_awake($now, $date)) return;
     $every = max(10, (int) setting('pulse_every_min')) * 60;
-    $day = day_row($date);
-    $last = max((int) setting('pulse_last', '0'), (int) $day['up_at']);
+    [$from] = awake_window($date, $now);
+    $last = max((int) setting('pulse_last', '0'), $from);
     if ($now < $last + $every) return;
     // Never stack on top of another push in the last 4 minutes (a prayer call, a task); retry next minute.
     if ((int) db()->query('SELECT COALESCE(MAX(ts),0) FROM pushes WHERE kind<>\'pulse\'')->fetchColumn() > $now - 240) return;
-    $foci = pulse_foci($date, $now);
-    if (!$foci) return;
+
     $hist = json_decode(setting('pulse_hist', '[]'), true) ?: [];
-    if (isset($foci['prayer']) && !in_array('prayer', array_slice($hist, -3), true)) {
+    $used = json_decode(setting('pulse_used', '{}'), true) ?: [];
+    if ((setting('pulse_used_date') ?? '') !== $date) { $used = []; }
+    $foci = pulse_foci($date, $now, $used);
+    if (!$foci) return;
+
+    // An open prayer window outranks everything, but not twice in a row.
+    $due = isset($foci['prayer']) && str_contains($foci['prayer']['title'], 'left');
+    if ($due && !in_array('prayer', array_slice($hist, -2), true)) {
         $key = 'prayer';
     } else {
-        $key = null; $oldest = PHP_INT_MAX;
+        $key = null; $oldest = -1;
         foreach (array_keys($foci) as $k) {
             $pos = array_search($k, array_reverse($hist), true);
             $age = $pos === false ? PHP_INT_MAX : $pos;      // never used, or how many pulses ago
-            if ($key === null || $age > $oldest) { $key = $k; $oldest = $age; }
+            if ($age > $oldest) { $key = $k; $oldest = $age; }
         }
     }
     $p = $foci[$key];
-    if (notify('pulse', 'pulse', $p['title'], $p['ctx'], $p['tier'], ['essential' => true, 'body' => $p['body'], 'ttl' => 900])) {
+
+    // One short action line, or one short quote - never both, or it stops being readable at a glance.
+    $opts = ['essential' => true, 'url' => $p['url'] ?? '/#/today', 'ttl' => 900];
+    $turn = (int) ($used[$key] ?? 0);
+    if ($p['body'] === null || $turn % 3 === 2) {
+        $opts['body'] = '';
+        $opts['qmax'] = 95;
+    } else {
+        $opts['body'] = $p['body'];
+        $opts['quote'] = false;
+    }
+    if (notify('pulse', 'pulse', $p['title'], $p['ctx'], $p['tier'], $opts)) {
         $hist[] = $key;
+        $used[$key] = $turn + 1;
         set_setting('pulse_hist', json_encode(array_slice($hist, -12)));
+        set_setting('pulse_used', json_encode($used));
+        set_setting('pulse_used_date', $date);
         set_setting('pulse_last', (string) $now);
         if (!empty($p['task'])) db()->prepare('UPDATE tasks SET sent=sent+1 WHERE date=? AND key=?')->execute([$date, $p['task']]);
     }

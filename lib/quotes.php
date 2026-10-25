@@ -67,8 +67,10 @@ function grade_label(string $g): string
 /**
  * Pick a quote for the given context tags and tier.
  * Skips anything sent in the last N days (30, relaxing to 20 then 10 when the pool is short).
+ * $maxLen is how much room the notification has left; longer quotes are not considered at all,
+ * because a truncated hadith is worse than no hadith.
  */
-function pick_quote(array $tags, int $tier, ?int $now = null): ?array
+function pick_quote(array $tags, int $tier, ?int $now = null, int $maxLen = 0): ?array
 {
     quotes_ready();
     $now ??= app_now();
@@ -79,16 +81,19 @@ function pick_quote(array $tags, int $tier, ?int $now = null): ?array
 
     $scored = [];
     foreach ($rows as $r) {
+        if ($maxLen > 0 && mb_strlen(trim($r['en'])) > $maxLen) continue;
         $rt = json_decode($r['tags'], true) ?: [];
         $match = count(array_intersect($tags, $rt));
         $isNudge = $r['kind'] === 'nudge';
-        // nudges only fit when their own context matches; hadith may match loosely
-        if ($isNudge && $match === 0) continue;
+        // Nudges only fit when their own subject matches, and "task" is not a subject: without
+        // this, a line about reciting Quran aloud turns up under "Read Seerah".
+        if ($isNudge && count(array_intersect(array_diff($tags, ['task']), $rt)) === 0) continue;
         $diff = abs((int) $r['tier'] - $tier);
         $tierScore = match (true) { $diff === 0 => 4, $diff === 1 => 2, $diff === 2 => 0, default => -3 };
         $r['score'] = $match * 3 + $tierScore + ($isNudge ? 1 : 0);
         $scored[] = $r;
     }
+    if (!$scored) return null;
     $base = max(0, (int) setting('norepeat_days'));
     $pool = [];
     foreach (array_values(array_unique(array_filter([$base, 20, 10], fn($d) => $d <= $base))) as $days) {
@@ -112,14 +117,16 @@ function quote_mark_sent(string $qid, string $kind, int $tier, ?int $now = null)
 }
 
 /** Text shown in a notification body: the words, then a short source line. */
-function quote_body(array $q, int $max = 230): string
+function quote_body(array $q, int $max = 110): string
 {
     $en = trim(preg_replace('/\s+/', ' ', $q['en']));
     $en = trim($en, " \t\"'“”");
-    if (mb_strlen($en) > $max) {
-        $cut = mb_substr($en, 0, $max);
+    // A hadith is wrapped in quote marks, and those two characters count against the line too.
+    $room = $q['kind'] === 'nudge' ? $max : $max - 2;
+    if (mb_strlen($en) > $room) {
+        $cut = mb_substr($en, 0, $room - 1);
         $sp = mb_strrpos($cut, ' ');
-        $en = mb_substr($cut, 0, $sp ?: $max) . '…';
+        $en = rtrim(mb_substr($cut, 0, $sp ?: $room - 1), ' ,.;:') . '…';
     }
     if ($q['kind'] === 'nudge') return $en;
     $label = grade_label($q['grade']);

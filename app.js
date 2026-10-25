@@ -322,6 +322,12 @@ function viewSettings() {
   <section class="card stack">
     <small>Umm Al-Qura method. Location is set ${st.location_set === '1' ? 'from your phone' : '<strong>to Makkah until you set it</strong>'}. Time zone: ${esc(st.tz)}.</small>
     <button class="btn" data-act="locate">Use my current location</button>
+    <label for="calc_method">Prayer time method</label>
+    <select id="calc_method">
+      <option value="kuwait" ${st.calc_method === 'kuwait' ? 'selected' : ''}>Kuwait — Ministry of Awqaf</option>
+      <option value="ummalqura" ${st.calc_method === 'ummalqura' ? 'selected' : ''}>Saudi Arabia — Umm al-Qura</option>
+      <option value="mwl" ${st.calc_method === 'mwl' ? 'selected' : ''}>Muslim World League</option>
+    </select>
     <div class="toggle"><span>Hanafi Asr (later time)</span><input type="checkbox" id="hanafi" ${st.asr_factor === '2' ? 'checked' : ''}></div>
     <div class="toggle"><span>Remind me to leave for the masjid</span><input type="checkbox" id="masjid" ${st.masjid_on === '1' ? 'checked' : ''}></div>
   </section>
@@ -542,7 +548,7 @@ document.addEventListener('click', async (e) => {
       }, () => toast('Location was not allowed'), { enableHighAccuracy: false, timeout: 15000 });
       break;
     case 'savesched': {
-      const body = { asr_factor: $('#hanafi').checked ? 2 : 1, masjid_on: $('#masjid').checked ? 1 : 0, pulse_on: $('#pulse_on').checked ? 1 : 0 };
+      const body = { asr_factor: $('#hanafi').checked ? 2 : 1, calc_method: $('#calc_method').value, masjid_on: $('#masjid').checked ? 1 : 0, pulse_on: $('#pulse_on').checked ? 1 : 0 };
       for (const k of ['office_start', 'office_end', 'office_wake', 'night_start', 'pin_every_min', 'pulse_every_min', 'goal_steps', 'norepeat_days']) body[k] = $('#' + k).value;
       await act('/settings', body, 'Saved.');
       break;

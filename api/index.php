@@ -119,6 +119,7 @@ switch ($method . ' ' . $route) {
         foreach ($in as $k => $v) {
             if (!in_array($k, $allowed, true) || !is_scalar($v)) continue;
             if ($k === 'tz' && !in_array($v, timezone_identifiers_list(), true)) continue;
+            if ($k === 'calc_method' && !isset(PT_METHODS[$v])) continue;
             set_setting($k, (string) $v);
         }
         if (isset($in['lat'], $in['lng'])) set_setting('location_set', '1');

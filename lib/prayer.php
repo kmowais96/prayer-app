@@ -1,6 +1,19 @@
 <?php
-// Umm Al-Qura prayer times: Fajr 18.5 deg, Isha 90 min after Maghrib (120 in Ramadan).
-// Same equations as PrayTimes.org; checked against the `adhan` package in tests/.
+// Prayer times with the same equations as PrayTimes.org; checked against the `adhan` package in tests/.
+//
+// A "method" is only the twilight convention each authority publishes: how far below the horizon
+// the sun must be for Fajr and for Isha. Everything else (noon, Asr shadow, sunset) is astronomy
+// and is identical for all of them.
+const PT_METHODS = [
+    // Kuwait: Ministry of Awqaf and Islamic Affairs.
+    'kuwait' => ['fajr' => 18.0, 'isha_angle' => 17.5],
+    // Saudi Arabia: Umm al-Qura, which fixes Isha at 90 minutes after Maghrib (120 in Ramadan).
+    'ummalqura' => ['fajr' => 18.5, 'isha_min' => 90, 'isha_min_ramadan' => 120],
+    // Muslim World League, the common default elsewhere.
+    'mwl' => ['fajr' => 18.0, 'isha_angle' => 17.0],
+];
+
+function pt_method(string $name): array { return PT_METHODS[$name] ?? PT_METHODS['kuwait']; }
 
 function pt_deg2rad(float $d): float { return $d * M_PI / 180; }
 function pt_rad2deg(float $r): float { return $r * 180 / M_PI; }
@@ -62,24 +75,30 @@ function pt_hijri_month(int $y, int $m, int $d): int {
 /**
  * @return array<string,int> unix timestamps: fajr, sunrise, dhuhr, asr, maghrib, isha
  */
-function prayer_times(string $date, float $lat, float $lng, string $tz = 'UTC', int $asrFactor = 1, float $elev = 0): array {
+function prayer_times(string $date, float $lat, float $lng, string $tz = 'UTC', int $asrFactor = 1, float $elev = 0, string $method = 'kuwait'): array {
+    $mp = pt_method($method);
     [$y, $m, $d] = array_map('intval', explode('-', $date));
     $jd = pt_julian($y, $m, $d) - $lng / (15 * 24);
     $rise = 0.833 + 0.0347 * sqrt(max(0.0, $elev));
-    $t = [5, 6, 12, 13, 18]; // initial guesses (hours): fajr, sunrise, dhuhr, asr, sunset
+    $t = [5, 6, 12, 13, 18, 19]; // initial guesses (hours): fajr, sunrise, dhuhr, asr, sunset, isha
     for ($i = 0; $i < 2; $i++) { // one refinement pass, as PrayTimes does
         $g = array_map(fn($h) => $h / 24, $t);
         $t = [
-            pt_angle_time($jd, $lat, 18.5, $g[0], true),
+            pt_angle_time($jd, $lat, $mp['fajr'], $g[0], true),
             pt_angle_time($jd, $lat, $rise, $g[1], true),
             pt_midday($jd, $g[2]),
             pt_asr_time($jd, $lat, $asrFactor, $g[3]),
             pt_angle_time($jd, $lat, $rise, $g[4]),
+            isset($mp['isha_angle']) ? pt_angle_time($jd, $lat, $mp['isha_angle'], $g[5]) : $t[5],
         ];
     }
     $shift = -$lng / 15; // solar hours -> UTC hours; the zone only labels the date, so DST days stay correct
-    $ramadan = pt_hijri_month($y, $m, $d) === 9;
-    $isha = $t[4] + ($ramadan ? 120 : 90) / 60;
+    if (isset($mp['isha_angle'])) {
+        $isha = $t[5];
+    } else {
+        $ramadan = pt_hijri_month($y, $m, $d) === 9;
+        $isha = $t[4] + ($ramadan ? $mp['isha_min_ramadan'] : $mp['isha_min']) / 60;
+    }
     $hours = [
         'fajr' => $t[0], 'sunrise' => $t[1], 'dhuhr' => $t[2],
         'asr' => $t[3], 'maghrib' => $t[4], 'isha' => $isha,
@@ -93,9 +112,9 @@ function prayer_times(string $date, float $lat, float $lng, string $tz = 'UTC', 
 }
 
 /** Fajr time of the next day, for night/tahajjud maths. */
-function prayer_next_fajr(string $date, float $lat, float $lng, string $tz, int $asr = 1): int {
+function prayer_next_fajr(string $date, float $lat, float $lng, string $tz, int $asr = 1, string $method = 'kuwait'): int {
     $next = (new DateTime($date, new DateTimeZone($tz)))->modify('+1 day')->format('Y-m-d');
-    return prayer_times($next, $lat, $lng, $tz, $asr)['fajr'];
+    return prayer_times($next, $lat, $lng, $tz, $asr, 0, $method)['fajr'];
 }
 
 /** Start of the last third of the night (Maghrib to next Fajr): the best time for tahajjud. */

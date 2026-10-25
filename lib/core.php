@@ -59,12 +59,20 @@ CREATE TABLE pushes(id INTEGER PRIMARY KEY, ts INTEGER, kind TEXT, tag TEXT, tit
 SQL);
         $db->exec('PRAGMA user_version = 1');
     }
+    if ($v < 2) {
+        // When the app (or the cron) first laid eyes on this day. Used to stay silent about
+        // prayer windows that had already closed before the app could ask about them.
+        $db->exec('ALTER TABLE days ADD COLUMN seen_ts INTEGER');
+        $db->exec('UPDATE days SET seen_ts = COALESCE(up_at, 0) WHERE seen_ts IS NULL');
+        $db->exec('PRAGMA user_version = 2');
+    }
 }
 
 // ---------- settings ----------
 
 const DEFAULTS = [
-    'lat' => '21.4225', 'lng' => '39.8262', 'tz' => 'Asia/Riyadh', 'asr_factor' => '1', // Makkah until the app sets a real location
+    'lat' => '29.3759', 'lng' => '47.9774', 'tz' => 'Asia/Kuwait', 'asr_factor' => '1', // Kuwait City until the app sets a real location
+    'calc_method' => 'kuwait', // Ministry of Awqaf and Islamic Affairs; see PT_METHODS in prayer.php
     'office_start' => '08:00', 'office_end' => '17:30', 'off_days' => '5,6',           // Fri, Sat
     'night_start' => '22:00', 'office_wake' => '07:00', 'pin_every_min' => '120',
     'norepeat_days' => '30', 'masjid_on' => '1', 'site_url' => 'https://app.kwisdomacademy.com',
@@ -118,8 +126,9 @@ function in_office_hours(int $ts): bool
 function day_times(string $date): array
 {
     static $cache = [];
-    $key = $date . '|' . setting('lat') . '|' . setting('lng') . '|' . setting('asr_factor');
-    return $cache[$key] ??= prayer_times($date, (float) setting('lat'), (float) setting('lng'), setting('tz'), (int) setting('asr_factor'));
+    $key = $date . '|' . setting('lat') . '|' . setting('lng') . '|' . setting('asr_factor') . '|' . setting('calc_method');
+    return $cache[$key] ??= prayer_times($date, (float) setting('lat'), (float) setting('lng'), setting('tz'),
+        (int) setting('asr_factor'), 0, (string) setting('calc_method'));
 }
 
 /** [prayer => [start, end]] ; Isha ends at the middle of the night. */
