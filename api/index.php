@@ -56,7 +56,7 @@ if ($route === 'fajr.json' && ($viaKey || $viaToken)) {
     $date = local_date($now);
     $tom = add_days($date, 1);
     $f = day_times($tom)['fajr'];
-    out(['date' => $tom, 'fajr' => hm($f), 'hour' => (int) substr(hm($f), 0, 2), 'minute' => (int) substr(hm($f), 3, 2), 'ts' => $f,
+    out(['date' => $tom, 'fajr' => hm($f), 'at' => $tom . ' ' . hm($f), 'hour' => (int) substr(hm($f), 0, 2), 'minute' => (int) substr(hm($f), 3, 2), 'ts' => $f,
          'today_fajr' => hm(day_times($date)['fajr']), 'office_wake' => setting('office_wake')]);
 }
 
