@@ -342,9 +342,10 @@ function viewSettings() {
   <section class="card stack">
     <small>Shortcuts send events here with a POST and a JSON body. Keep this link private.</small>
     <div class="mono">${esc(base)}</div>
-    <button class="btn small" data-act="copy" data-v="${esc(base)}">Copy link</button>
+    <button class="btn small" data-act="copy" data-v="${esc(base)}">Copy event link</button>
     <small>Bodies: <code>{"type":"steps","value":6000}</code> &nbsp; <code>{"type":"phone_use"}</code> &nbsp; <code>{"type":"sleep_focus"}</code></small>
     <div class="mono">${esc(location.origin + '/api/fajr.json?k=' + (eventKey || 'YOUR_KEY'))}</div>
+    <button class="btn small" data-act="copy" data-v="${esc(location.origin + '/api/fajr.json?k=' + (eventKey || 'YOUR_KEY'))}">Copy Fajr link</button>
     <small>That second link returns tomorrow's Fajr time for the nightly alarm.</small>
   </section>
   <h2>Account</h2>
