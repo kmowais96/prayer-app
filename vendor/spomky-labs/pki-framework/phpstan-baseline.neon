@@ -1,0 +1,1093 @@
+parameters:
+	ignoreErrors:
+		-
+			rawMessage: 'Only numeric types are allowed in -, int|null given on the right side.'
+			identifier: minus.rightNonNumeric
+			count: 1
+			path: src/ASN1/Component/Length.php
+
+		-
+			rawMessage: 'Parameter &$offset by-ref type of method SpomkyLabs\Pki\ASN1\Component\Length::expectFromDER() expects int, int|null given.'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/ASN1/Component/Length.php
+
+		-
+			rawMessage: 'Property SpomkyLabs\Pki\ASN1\DERData::$contentOffset (int) does not accept int|null.'
+			identifier: assign.propertyType
+			count: 1
+			path: src/ASN1/DERData.php
+
+		-
+			rawMessage: Cannot access constant class on mixed.
+			identifier: classConstant.nonObject
+			count: 1
+			path: src/ASN1/Element.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\ASN1\Element::expectTagged() should return SpomkyLabs\Pki\ASN1\Type\TaggedType but returns $this(SpomkyLabs\Pki\ASN1\Element).'
+			identifier: return.type
+			count: 1
+			path: src/ASN1/Element.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\ASN1\Element::fromDER() should return static(SpomkyLabs\Pki\ASN1\Element) but returns mixed.'
+			identifier: return.type
+			count: 1
+			path: src/ASN1/Element.php
+
+		-
+			rawMessage: 'Parameter #3 ...$values of function sprintf expects bool|float|int|string|null, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: src/ASN1/Element.php
+
+		-
+			rawMessage: 'Parameter #3 of function sprintf is expected to be int by placeholder #2 ("%%d"), string given.'
+			identifier: argument.type
+			count: 1
+			path: src/ASN1/Element.php
+
+		-
+			rawMessage: Anonymous function should return string but returns mixed.
+			identifier: return.type
+			count: 1
+			path: src/ASN1/Type/Constructed/ConstructedString.php
+
+		-
+			rawMessage: 'Call to an undefined method SpomkyLabs\Pki\ASN1\Element::string().'
+			identifier: method.notFound
+			count: 1
+			path: src/ASN1/Type/Constructed/ConstructedString.php
+
+		-
+			rawMessage: 'Parameter &$offset by-ref type of method SpomkyLabs\Pki\ASN1\Type\Constructed\ConstructedString::decodeDefiniteLength() expects int, int|null given.'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/ASN1/Type/Constructed/ConstructedString.php
+
+		-
+			rawMessage: 'Parameter &$offset by-ref type of method SpomkyLabs\Pki\ASN1\Type\Constructed\ConstructedString::decodeIndefiniteLength() expects int, int|null given.'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/ASN1/Type/Constructed/ConstructedString.php
+
+		-
+			rawMessage: 'Parameter &$offset by-ref type of method SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence::decodeDefiniteLength() expects int, int|null given.'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/ASN1/Type/Constructed/Sequence.php
+
+		-
+			rawMessage: 'Parameter &$offset by-ref type of method SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence::decodeIndefiniteLength() expects int, int|null given.'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/ASN1/Type/Constructed/Sequence.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\ASN1\Type\Constructed\Set::decodeFromDER() should return SpomkyLabs\Pki\ASN1\Type\Constructed\Set but returns SpomkyLabs\Pki\ASN1\Feature\ElementBase.'
+			identifier: return.type
+			count: 1
+			path: src/ASN1/Type/Constructed/Set.php
+
+		-
+			rawMessage: 'Parameter &$offset by-ref type of method SpomkyLabs\Pki\ASN1\Type\Constructed\Set::decodeDefiniteLength() expects int, int|null given.'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/ASN1/Type/Constructed/Set.php
+
+		-
+			rawMessage: 'Parameter &$offset by-ref type of method SpomkyLabs\Pki\ASN1\Type\Constructed\Set::decodeIndefiniteLength() expects int, int|null given.'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/ASN1/Type/Constructed/Set.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\ASN1\Type\PrimitiveString::decodeFromDER() should return static(SpomkyLabs\Pki\ASN1\Type\PrimitiveString) but returns SpomkyLabs\Pki\ASN1\Type\PrimitiveString.'
+			identifier: return.type
+			count: 1
+			path: src/ASN1/Type/PrimitiveString.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\ASN1\Type\Structure implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/ASN1/Type/Structure.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\ASN1\Type\Structure::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/ASN1/Type/Structure.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\ASN1\Type\Structure::getTagged() should return SpomkyLabs\Pki\ASN1\Type\TaggedType but returns SpomkyLabs\Pki\ASN1\Element.'
+			identifier: return.type
+			count: 1
+			path: src/ASN1/Type/Structure.php
+
+		-
+			rawMessage: Offset int might not exist on array<SpomkyLabs\Pki\ASN1\Element>|null.
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/ASN1/Type/Structure.php
+
+		-
+			rawMessage: 'Parameter #2 $offset of static method SpomkyLabs\Pki\ASN1\Component\Length::expectFromDER() expects int, int|null given.'
+			identifier: argument.type
+			count: 2
+			path: src/ASN1/Type/Structure.php
+
+		-
+			rawMessage: 'Parameter #1 $data of static method SpomkyLabs\Pki\CryptoTypes\Signature\Signature::fromSignatureData() expects string, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoBridge/Crypto/OpenSSLCrypto.php
+
+		-
+			rawMessage: 'Parameter #2 $key_algo of method SpomkyLabs\Pki\CryptoBridge\Crypto\OpenSSLCrypto::_checkSignatureAlgoAndKey() expects SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\AlgorithmIdentifier, SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierType given.'
+			identifier: argument.type
+			count: 2
+			path: src/CryptoBridge/Crypto/OpenSSLCrypto.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\CryptoEncoding\PEMBundle implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/CryptoEncoding/PEMBundle.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoEncoding\PEMBundle::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/CryptoEncoding/PEMBundle.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\AlgorithmIdentifierFactory::parse() should return SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\AlgorithmIdentifier but returns mixed.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/AlgorithmIdentifierFactory.php
+
+		-
+			rawMessage: 'Parameter #2 $initializationVector of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::__construct() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/AES192CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Parameter #2 $initializationVector of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::__construct() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/AES256CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Parameter #1 $iv of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::_checkIVSize() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/DESCBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Parameter #2 $initializationVector of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::__construct() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/DESCBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Parameter #1 $iv of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::_checkIVSize() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/DESEDE3CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Parameter #2 $initializationVector of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::__construct() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/DESEDE3CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Cannot access offset int<min, 255> on mixed.'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/RC2CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\RC2CBCAlgorithmIdentifier::_versionToEKB() should return int but returns mixed.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/RC2CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Parameter #1 $iv of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::_checkIVSize() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/RC2CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Parameter #2 $initializationVector of method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher\CipherAlgorithmIdentifier::__construct() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Cipher/RC2CBCAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Property SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Hash\MD5AlgorithmIdentifier::$params (SpomkyLabs\Pki\ASN1\Type\Primitive\NullType|null) is never assigned null so it can be removed from the property type.'
+			identifier: property.unusedType
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Hash/MD5AlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Hash\RFC4231HMACAlgorithmIdentifier::paramsASN1() should return SpomkyLabs\Pki\ASN1\Type\Primitive\NullType|null but returns SpomkyLabs\Pki\ASN1\Element|null.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/AlgorithmIdentifier/Hash/RFC4231HMACAlgorithmIdentifier.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\Asymmetric\EC\ECPrivateKey::namedCurve() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/EC/ECPrivateKey.php
+
+		-
+			rawMessage: 'Parameter #1 $ecPoint of static method SpomkyLabs\Pki\CryptoTypes\Asymmetric\EC\ECPublicKey::create() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/EC/ECPrivateKey.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\Asymmetric\EC\ECPublicKey::namedCurve() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/EC/ECPublicKey.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey::attributes() should return SpomkyLabs\Pki\CryptoTypes\Asymmetric\Attribute\OneAsymmetricKeyAttributes but returns SpomkyLabs\Pki\CryptoTypes\Asymmetric\Attribute\OneAsymmetricKeyAttributes|null.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/OneAsymmetricKey.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey::fromASN1() should return static(SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey) but returns SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/OneAsymmetricKey.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey::fromPrivateKey() should return static(SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey) but returns SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/OneAsymmetricKey.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\CryptoTypes\Asymmetric\OneAsymmetricKey::publicKeyData() should return SpomkyLabs\Pki\ASN1\Type\Primitive\BitString but returns SpomkyLabs\Pki\ASN1\Type\Primitive\BitString|null.'
+			identifier: return.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/OneAsymmetricKey.php
+
+		-
+			rawMessage: 'Parameter #2 $publicKey of static method SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo::create() expects SpomkyLabs\Pki\ASN1\Type\Primitive\BitString, SpomkyLabs\Pki\ASN1\Type\Primitive\BitString|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/OneAsymmetricKey.php
+
+		-
+			rawMessage: 'Parameter #1 $publicKey of static method SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve25519\Ed25519PublicKey::create() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/RFC8410/Curve25519/Ed25519PrivateKey.php
+
+		-
+			rawMessage: 'Parameter #1 $publicKey of static method SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve25519\X25519PublicKey::create() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/RFC8410/Curve25519/X25519PrivateKey.php
+
+		-
+			rawMessage: 'Parameter #1 $publicKey of static method SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve448\Ed448PublicKey::create() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/RFC8410/Curve448/Ed448PrivateKey.php
+
+		-
+			rawMessage: 'Parameter #1 $publicKey of static method SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve448\X448PublicKey::create() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/RFC8410/Curve448/X448PrivateKey.php
+
+		-
+			rawMessage: 'Parameter #1 $idx of method SpomkyLabs\Pki\ASN1\Type\Structure::at() expects int, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/RSA/RSAPrivateKey.php
+
+		-
+			rawMessage: 'Parameter #1 $idx of method SpomkyLabs\Pki\ASN1\Type\Structure::at() expects int, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Asymmetric/RSA/RSASSAPSSPrivateKey.php
+
+		-
+			rawMessage: 'Parameter #1 $string of static method SpomkyLabs\Pki\ASN1\Type\Primitive\BitString::create() expects string, string|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/CryptoTypes/Signature/RSASignature.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X501\ASN1\Attribute implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/Attribute.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\ASN1\Attribute::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/Attribute.php
+
+		-
+			rawMessage: PHPDoc tag @var with type SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue is not subtype of native type class-string<SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue>.
+			identifier: varTag.nativeType
+			count: 1
+			path: src/X501/ASN1/Attribute.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\ASN1\AttributeType::_oidReverseMap() should return array<string> but returns mixed.'
+			identifier: return.type
+			count: 1
+			path: src/X501/ASN1/AttributeType.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\ASN1\AttributeValue\Feature\DirectoryString::toASN1() should return SpomkyLabs\Pki\ASN1\Element but returns mixed.'
+			identifier: return.type
+			count: 1
+			path: src/X501/ASN1/AttributeValue/Feature/DirectoryString.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X501\ASN1\Collection\AttributeCollection implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/Collection/AttributeCollection.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\ASN1\Collection\AttributeCollection::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/Collection/AttributeCollection.php
+
+		-
+			rawMessage: 'Unsafe usage of new static() in abstract class SpomkyLabs\Pki\X501\ASN1\Collection\AttributeCollection in static method create().'
+			identifier: new.staticInAbstractClassStaticMethod
+			count: 1
+			path: src/X501/ASN1/Collection/AttributeCollection.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X501\ASN1\Name implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/Name.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\ASN1\Name::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/Name.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X501\ASN1\RDN implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/RDN.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\ASN1\RDN::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X501/ASN1/RDN.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\DN\DNParser::_parseAttrHexValue() should return string but returns string|false.'
+			identifier: return.type
+			count: 1
+			path: src/X501/DN/DNParser.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\DN\DNParser::_regexMatch() should return string|null but returns string|false.'
+			identifier: return.type
+			count: 1
+			path: src/X501/DN/DNParser.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X501\DN\DNParser::escapeString() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/X501/DN/DNParser.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\AttCertValidityPeriod::roundDownFractionalSeconds() should return DateTimeImmutable but returns DateTimeImmutable|false.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/AttCertValidityPeriod.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\IetfAttrSyntax implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/AttributeCertificate/Attribute/IetfAttrSyntax.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\IetfAttrSyntax::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/AttributeCertificate/Attribute/IetfAttrSyntax.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\IetfAttrSyntax::policyAuthority() should return SpomkyLabs\Pki\X509\GeneralName\GeneralNames but returns SpomkyLabs\Pki\X509\GeneralName\GeneralNames|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attribute/IetfAttrSyntax.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\RoleAttributeValue::roleAuthority() should return SpomkyLabs\Pki\X509\GeneralName\GeneralNames but returns SpomkyLabs\Pki\X509\GeneralName\GeneralNames|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attribute/RoleAttributeValue.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\SvceAuthInfo::authInfo() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attribute/SvceAuthInfo.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\AttributeCertificateInfo::issuerUniqueID() should return SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier but returns SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/AttributeCertificateInfo.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\AttributeCertificateInfo::serialNumber() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/AttributeCertificateInfo.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\AttributeCertificateInfo::signature() should return SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\SignatureAlgorithmIdentifier but returns SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\SignatureAlgorithmIdentifier|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/AttributeCertificateInfo.php
+
+		-
+			rawMessage: 'Parameter #4 $attributes of static method SpomkyLabs\Pki\X509\AttributeCertificate\AttributeCertificateInfo::create() expects SpomkyLabs\Pki\X509\AttributeCertificate\Attributes, SpomkyLabs\Pki\X501\ASN1\Collection\SequenceOfAttributes given.'
+			identifier: argument.type
+			count: 1
+			path: src/X509/AttributeCertificate/AttributeCertificateInfo.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attributes::accessIdentity() should return SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\AccessIdentityAttributeValue but returns SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attributes.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attributes::authenticationInformation() should return SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\AuthenticationInfoAttributeValue but returns SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attributes.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attributes::chargingIdentity() should return SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\ChargingIdentityAttributeValue but returns SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attributes.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attributes::group() should return SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\GroupAttributeValue but returns SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attributes.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attributes::role() should return SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\RoleAttributeValue but returns SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attributes.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Attributes::roles() should return array<SpomkyLabs\Pki\X509\AttributeCertificate\Attribute\RoleAttributeValue> but returns array<SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue>.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Attributes.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Holder::baseCertificateID() should return SpomkyLabs\Pki\X509\AttributeCertificate\IssuerSerial but returns SpomkyLabs\Pki\X509\AttributeCertificate\IssuerSerial|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Holder.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Holder::entityName() should return SpomkyLabs\Pki\X509\GeneralName\GeneralNames but returns SpomkyLabs\Pki\X509\GeneralName\GeneralNames|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Holder.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\Holder::objectDigestInfo() should return SpomkyLabs\Pki\X509\AttributeCertificate\ObjectDigestInfo but returns SpomkyLabs\Pki\X509\AttributeCertificate\ObjectDigestInfo|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/Holder.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\IssuerSerial::issuerUID() should return SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier but returns SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/IssuerSerial.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\AttributeCertificate\V2Form::issuerName() should return SpomkyLabs\Pki\X509\GeneralName\GeneralNames but returns SpomkyLabs\Pki\X509\GeneralName\GeneralNames|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/AttributeCertificate/V2Form.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\CertificateBundle implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/CertificateBundle.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\CertificateBundle::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/CertificateBundle.php
+
+		-
+			rawMessage: 'Parameter #1 $pem of static method SpomkyLabs\Pki\X509\Certificate\Certificate::fromPEM() expects SpomkyLabs\Pki\CryptoEncoding\PEM, mixed given.'
+			identifier: argument.type
+			count: 1
+			path: src/X509/Certificate/CertificateBundle.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\CertificateChain implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/CertificateChain.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\CertificateChain::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/CertificateChain.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\AAControlsExtension::excludedAttrs() should return array<string> but returns array<string>|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/AAControlsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\AAControlsExtension::pathLen() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/AAControlsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\AAControlsExtension::permittedAttrs() should return array<string> but returns array<string>|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/AAControlsExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityInformationAccessExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/AuthorityInformationAccessExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityInformationAccessExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/AuthorityInformationAccessExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityKeyIdentifierExtension::issuer() should return SpomkyLabs\Pki\X509\GeneralName\GeneralNames but returns SpomkyLabs\Pki\X509\GeneralName\GeneralNames|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/AuthorityKeyIdentifierExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityKeyIdentifierExtension::keyIdentifier() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/AuthorityKeyIdentifierExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityKeyIdentifierExtension::serial() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/AuthorityKeyIdentifierExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\BasicConstraintsExtension::pathLen() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/BasicConstraintsExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\CRLDistributionPointsExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/CRLDistributionPointsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CRLDistributionPointsExtension::fromDER() should return static(SpomkyLabs\Pki\X509\Certificate\Extension\CRLDistributionPointsExtension) but returns SpomkyLabs\Pki\X509\Certificate\Extension\CRLDistributionPointsExtension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/CRLDistributionPointsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CRLDistributionPointsExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/CRLDistributionPointsExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePoliciesExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePoliciesExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePoliciesExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePoliciesExtension.php
+
+		-
+			rawMessage: 'Parameter #1 ...$elements of static method SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence::create() expects SpomkyLabs\Pki\ASN1\Element, SpomkyLabs\Pki\ASN1\Type\StringType given.'
+			identifier: argument.type
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePolicy/NoticeReference.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePolicy/PolicyInformation.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation::CPSQualifier() should return SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\CPSQualifier but returns SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyQualifierInfo.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePolicy/PolicyInformation.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePolicy/PolicyInformation.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation::userNoticeQualifier() should return SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\UserNoticeQualifier but returns SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyQualifierInfo.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePolicy/PolicyInformation.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\UserNoticeQualifier::explicitText() should return SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\DisplayText but returns SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\DisplayText|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePolicy/UserNoticeQualifier.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\UserNoticeQualifier::noticeRef() should return SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\NoticeReference but returns SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\NoticeReference|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/CertificatePolicy/UserNoticeQualifier.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\DistributionPoint\DistributionPoint::crlIssuer() should return SpomkyLabs\Pki\X509\GeneralName\GeneralNames but returns SpomkyLabs\Pki\X509\GeneralName\GeneralNames|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/DistributionPoint/DistributionPoint.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\DistributionPoint\DistributionPoint::distributionPointName() should return SpomkyLabs\Pki\X509\Certificate\Extension\DistributionPoint\DistributionPointName but returns SpomkyLabs\Pki\X509\Certificate\Extension\DistributionPoint\DistributionPointName|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/DistributionPoint/DistributionPoint.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\DistributionPoint\DistributionPoint::reasons() should return SpomkyLabs\Pki\X509\Certificate\Extension\DistributionPoint\ReasonFlags but returns SpomkyLabs\Pki\X509\Certificate\Extension\DistributionPoint\ReasonFlags|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/DistributionPoint/DistributionPoint.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\ExtendedKeyUsageExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/ExtendedKeyUsageExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\ExtendedKeyUsageExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/ExtendedKeyUsageExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints\GeneralSubtrees implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/NameConstraints/GeneralSubtrees.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints\GeneralSubtrees::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/NameConstraints/GeneralSubtrees.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraintsExtension::excludedSubtrees() should return SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints\GeneralSubtrees but returns SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints\GeneralSubtrees|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/NameConstraintsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraintsExtension::permittedSubtrees() should return SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints\GeneralSubtrees but returns SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints\GeneralSubtrees|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/NameConstraintsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\PolicyConstraintsExtension::inhibitPolicyMapping() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/PolicyConstraintsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\PolicyConstraintsExtension::requireExplicitPolicy() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extension/PolicyConstraintsExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\PolicyMappingsExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/PolicyMappingsExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\PolicyMappingsExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/PolicyMappingsExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\SubjectDirectoryAttributesExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/SubjectDirectoryAttributesExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\SubjectDirectoryAttributesExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/SubjectDirectoryAttributesExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\SubjectInformationAccessExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/SubjectInformationAccessExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\SubjectInformationAccessExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/SubjectInformationAccessExtension.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\Target\Targets implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/Target/Targets.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\Target\Targets::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/Target/Targets.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\Certificate\Extension\TargetInformationExtension implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/TargetInformationExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extension\TargetInformationExtension::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/Certificate/Extension/TargetInformationExtension.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::authorityKeyIdentifier() should return SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityKeyIdentifierExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::basicConstraints() should return SpomkyLabs\Pki\X509\Certificate\Extension\BasicConstraintsExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::certificatePolicies() should return SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePoliciesExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::crlDistributionPoints() should return SpomkyLabs\Pki\X509\Certificate\Extension\CRLDistributionPointsExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::extendedKeyUsage() should return SpomkyLabs\Pki\X509\Certificate\Extension\ExtendedKeyUsageExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::inhibitAnyPolicy() should return SpomkyLabs\Pki\X509\Certificate\Extension\InhibitAnyPolicyExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::issuerAlternativeName() should return SpomkyLabs\Pki\X509\Certificate\Extension\IssuerAlternativeNameExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::keyUsage() should return SpomkyLabs\Pki\X509\Certificate\Extension\KeyUsageExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::nameConstraints() should return SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraintsExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::policyConstraints() should return SpomkyLabs\Pki\X509\Certificate\Extension\PolicyConstraintsExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::policyMappings() should return SpomkyLabs\Pki\X509\Certificate\Extension\PolicyMappingsExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::subjectAlternativeName() should return SpomkyLabs\Pki\X509\Certificate\Extension\SubjectAlternativeNameExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Extensions::subjectKeyIdentifier() should return SpomkyLabs\Pki\X509\Certificate\Extension\SubjectKeyIdentifierExtension but returns SpomkyLabs\Pki\X509\Certificate\Extension\Extension.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Extensions.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\TBSCertificate::issuerUniqueID() should return SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier but returns SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/TBSCertificate.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\TBSCertificate::serialNumber() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/TBSCertificate.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\TBSCertificate::signature() should return SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\SignatureAlgorithmIdentifier but returns SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\SignatureAlgorithmIdentifier|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/TBSCertificate.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\TBSCertificate::subjectUniqueID() should return SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier but returns SpomkyLabs\Pki\X509\Certificate\UniqueIdentifier|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/TBSCertificate.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\TBSCertificate::version() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/TBSCertificate.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\Certificate\Time::roundDownFractionalSeconds() should return DateTimeImmutable but returns DateTimeImmutable|false.'
+			identifier: return.type
+			count: 1
+			path: src/X509/Certificate/Time.php
+
+		-
+			rawMessage: 'Parameter #1 ...$elements of static method SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence::create() expects SpomkyLabs\Pki\ASN1\Element, SpomkyLabs\Pki\ASN1\Type\TimeType given.'
+			identifier: argument.type
+			count: 1
+			path: src/X509/Certificate/Validity.php
+
+		-
+			rawMessage: 'Parameter #2 ...$elements of static method SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence::create() expects SpomkyLabs\Pki\ASN1\Element, SpomkyLabs\Pki\ASN1\Type\TimeType given.'
+			identifier: argument.type
+			count: 1
+			path: src/X509/Certificate/Validity.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\CertificationPath\CertificationPath implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/CertificationPath/CertificationPath.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\CertificationPath::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/CertificationPath/CertificationPath.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\PathValidationConfig::trustAnchor() should return SpomkyLabs\Pki\X509\Certificate\Certificate but returns SpomkyLabs\Pki\X509\Certificate\Certificate|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/PathValidationConfig.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::explicitPolicy() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::index() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::inhibitAnyPolicy() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::maxPathLength() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::pathLength() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::policyMapping() should return int but returns int|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::validPolicyTree() should return SpomkyLabs\Pki\X509\CertificationPath\Policy\PolicyTree but returns SpomkyLabs\Pki\X509\CertificationPath\Policy\PolicyTree|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::workingIssuerName() should return SpomkyLabs\Pki\X501\ASN1\Name but returns SpomkyLabs\Pki\X501\ASN1\Name|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::workingPublicKey() should return SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo but returns SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\ValidatorState::workingPublicKeyAlgorithm() should return SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierType but returns SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierType|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Parameter #3 $publicKeyInfo of static method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\PathValidationResult::create() expects SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo, SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Parameter #4 $publicKeyAlgo of static method SpomkyLabs\Pki\X509\CertificationPath\PathValidation\PathValidationResult::create() expects SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierType, SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierType|null given.'
+			identifier: argument.type
+			count: 1
+			path: src/X509/CertificationPath/PathValidation/ValidatorState.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\CertificationPath\Policy\PolicyNode implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/CertificationPath/Policy/PolicyNode.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationPath\Policy\PolicyNode::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/CertificationPath/Policy/PolicyNode.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationRequest\Attributes::extensionRequest() should return SpomkyLabs\Pki\X509\CertificationRequest\Attribute\ExtensionRequestValue but returns SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationRequest/Attributes.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\CertificationRequest\CertificationRequestInfo::attributes() should return SpomkyLabs\Pki\X509\CertificationRequest\Attributes but returns SpomkyLabs\Pki\X509\CertificationRequest\Attributes|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/CertificationRequest/CertificationRequestInfo.php
+
+		-
+			rawMessage: 'Class SpomkyLabs\Pki\X509\GeneralName\GeneralNames implements generic interface IteratorAggregate but does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/GeneralName/GeneralNames.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\GeneralName\GeneralNames::getIterator() return type with generic class ArrayIterator does not specify its types: TKey, TValue'
+			identifier: missingType.generics
+			count: 1
+			path: src/X509/GeneralName/GeneralNames.php
+
+		-
+			rawMessage: 'Method SpomkyLabs\Pki\X509\GeneralName\IPAddress::mask() should return string but returns string|null.'
+			identifier: return.type
+			count: 1
+			path: src/X509/GeneralName/IPAddress.php
+
+		-
+			rawMessage: 'Parameter #1 $words of static method SpomkyLabs\Pki\X509\GeneralName\IPv6Address::wordsToIPv6String() expects array<int>, array given.'
+			identifier: argument.type
+			count: 3
+			path: src/X509/GeneralName/IPv6Address.php

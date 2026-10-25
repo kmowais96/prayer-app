@@ -1,0 +1,6 @@
+{
+  "name": "owais/prayer-app",
+  "description": "Personal prayer discipline server",
+  "require": { "php": ">=8.1", "minishlink/web-push": "^9.0" },
+  "config": { "optimize-autoloader": true, "platform": { "php": "8.1.0" } }
+}

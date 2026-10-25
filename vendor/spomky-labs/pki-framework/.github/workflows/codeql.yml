@@ -1,0 +1,41 @@
+# CodeQL has no PHP extractor, so the only source this repository exposes to it
+# is its GitHub Actions workflows. The `actions` language covers exactly that.
+
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "*.*.x" ]
+  pull_request:
+    branches: [ "*.*.x" ]
+  schedule:
+    - cron: '37 10 * * 4'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ${{ 'ubuntu-latest' }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'actions' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v7
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4.37.3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4.37.3
+      with:
+        category: "/language:${{matrix.language}}"

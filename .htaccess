@@ -1,0 +1,29 @@
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# https only (the service worker and push need it)
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# server-side code, data and tooling are never served
+RewriteRule ^(lib|data|data-src|cron|vendor|tools|tests|\.git)(/|$) - [F,L]
+RewriteRule ^(composer\.(json|lock)|\.gitignore)$ - [F,L]
+
+# JSON API
+RewriteRule ^api/(.*)$ api/index.php [L,QSA]
+</IfModule>
+
+<FilesMatch "\.(sqlite|log|md)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  <FilesMatch "^(sw\.js|index\.html|manifest\.webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

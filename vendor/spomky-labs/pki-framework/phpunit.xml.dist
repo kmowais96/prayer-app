@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    cacheDirectory=".phpunit.cache"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    executionOrder="random"
+>
+    <coverage />
+    <testsuites>
+        <testsuite name="ASN1">
+            <directory>tests/ASN1</directory>
+        </testsuite>
+        <testsuite name="CryptoBridge">
+            <directory>tests/CryptoBridge</directory>
+        </testsuite>
+        <testsuite name="CryptoEncoding">
+            <directory>tests/CryptoEncoding</directory>
+        </testsuite>
+        <testsuite name="CryptoTypes">
+            <directory>tests/CryptoTypes</directory>
+        </testsuite>
+        <testsuite name="X501">
+            <directory>tests/X501</directory>
+        </testsuite>
+        <testsuite name="X509">
+            <directory>tests/X509</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>src/</directory>
+        </include>
+    </source>
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="xdebug.show_exception_trace" value="0"/>
+        <ini name="display_errors" value="1"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+    </php>
+</phpunit>
