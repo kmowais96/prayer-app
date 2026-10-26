@@ -694,11 +694,46 @@ function engine_tick(?int $now = null): void
         fn() => tick_pulse($now, $date),
         fn() => tick_pinned($now, $date),
     ];
+    $errs = [];
     foreach ($steps as $i => $s) {
         try { $s(); } catch (Throwable $e) {
+            $errs[] = "step $i: " . $e->getMessage() . ' @' . basename($e->getFile()) . ':' . $e->getLine();
             error_log("tick step $i failed: " . $e->getMessage() . ' @' . $e->getFile() . ':' . $e->getLine());
         }
     }
+    tick_diag($now, $date, $errs);
+}
+
+/**
+ * One line of state per tick, so a reminder that never arrives can be diagnosed from the
+ * server instead of guessed at. Overwritten every minute; data/ is never served (see .htaccess).
+ */
+function tick_diag(int $now, string $date, array $errs = []): void
+{
+    try {
+        [$from, $until] = awake_window($date, $now);
+        $db = db();
+        $lastOther = (int) $db->query('SELECT COALESCE(MAX(ts),0) FROM pushes WHERE kind<>\'pulse\'')->fetchColumn();
+        $st = $db->prepare('SELECT kind, COUNT(*) c, MAX(ts) last FROM pushes WHERE ts>=? GROUP BY kind');
+        $st->execute([local_ts($date, '00:00')]);
+        $today = [];
+        foreach ($st->fetchAll() as $r) $today[$r['kind']] = $r['c'] . ' last ' . hm((int) $r['last']);
+        $d = day_row($date);
+        $t = $db->prepare('SELECT COUNT(*) n, SUM(done) d FROM tasks WHERE date=?');
+        $t->execute([$date]);
+        $tc = $t->fetch();
+        @file_put_contents(APP_ROOT . '/data/tick.json', json_encode([
+            'at' => hm($now), 'date' => $date, 'office' => in_office_hours($now) ? 'yes' : 'no',
+            'pulse_on' => setting('pulse_on'), 'every_min' => setting('pulse_every_min'),
+            'pulse_last' => ((int) setting('pulse_last', '0')) ? hm((int) setting('pulse_last')) : 'never',
+            'awake' => hm($from) . '-' . hm($until) . ($now >= $from && $now < $until ? ' (in)' : ' (OUT)'),
+            'up_at' => $d['up_at'] ? hm((int) $d['up_at']) : null, 'bed_at' => $d['bed_at'] ? hm((int) $d['bed_at']) : null,
+            'last_non_pulse_push' => $lastOther ? hm($lastOther) . ' (' . intdiv($now - $lastOther, 60) . ' min ago)' : 'never',
+            'pushes_today' => $today, 'tasks' => (int) $tc['n'] . ' of which done ' . (int) $tc['d'],
+            'subs' => (int) $db->query('SELECT COUNT(*) FROM subs')->fetchColumn(),
+            'errors' => $errs,
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } catch (Throwable $e) { /* diagnostics must never break a tick */ }
 }
 
 // ---------- actions used by the API ----------
