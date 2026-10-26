@@ -45,22 +45,22 @@ for ($now = $start; $now <= $end; $now += 60) {
 
 function times(array $sent, string $kind, ?string $tag = null): array
 {
-    return array_values(array_map(fn($p) => hm($p['ts']), array_filter($sent, fn($p) => $p['kind'] === $kind && ($tag === null || $p['tag'] === $tag))));
+    return array_values(array_map(fn($p) => hm($p['ts']), array_filter($sent, fn($p) => $p['kind'] === $kind && ($tag === null || $p['group'] === $tag))));
 }
 
-$fajrPush = array_values(array_filter($sent, fn($p) => $p['tag'] === 'prayer-fajr' && $p['kind'] === 'prayer'));
+$fajrPush = array_values(array_filter($sent, fn($p) => $p['group'] === 'prayer-fajr' && $p['kind'] === 'prayer'));
 check(count($fajrPush) >= 8 && count($fajrPush) <= 14, 'fajr nags (1/min while asleep, then 5 min): ' . count($fajrPush));
 check(end($fajrPush)['ts'] <= $w['fajr'][0] + 20 * 60, 'fajr nags stop when prayed');
 
-$dh = array_values(array_filter($sent, fn($p) => $p['tag'] === 'prayer-dhuhr' && $p['kind'] === 'prayer'));
+$dh = array_values(array_filter($sent, fn($p) => $p['group'] === 'prayer-dhuhr' && $p['kind'] === 'prayer'));
 $offs = array_map(fn($p) => intdiv($p['ts'] - $w['dhuhr'][0], 60), $dh);
 check($offs === [0, 10, 20, 25], 'dhuhr cadence 0,10,20,+5: ' . json_encode($offs));
 check($dh[3]['tier'] > $dh[0]['tier'], 'tier rises: ' . implode(',', array_column($dh, 'tier')));
 
-$as = array_values(array_filter($sent, fn($p) => $p['tag'] === 'prayer-asr' && $p['kind'] === 'prayer'));
+$as = array_values(array_filter($sent, fn($p) => $p['group'] === 'prayer-asr' && $p['kind'] === 'prayer'));
 check(count($as) >= 3, 'asr notyet brings reminder sooner: ' . json_encode(array_map(fn($p) => intdiv($p['ts'] - $w['asr'][0], 60), $as)));
 
-$mg = array_values(array_filter($sent, fn($p) => $p['tag'] === 'prayer-maghrib'));
+$mg = array_values(array_filter($sent, fn($p) => $p['group'] === 'prayer-maghrib'));
 check(in_array('missed', array_column($mg, 'kind'), true), 'maghrib marked missed with qada push');
 check(count(array_filter($mg, fn($p) => $p['kind'] === 'qada')) === 2, 'two qada nags after missed');
 
@@ -102,6 +102,14 @@ foreach ([0, 5, 17, 33, 50] as $i) if (isset($pl[$i])) echo "  [" . hm($pl[$i]['
 $q = array_filter(array_column($sent, 'qid'));
 $dups = count($q) - count(array_unique($q));
 check($dups <= 5, "quote repeats within one day: $dups of " . count($q));
+
+// iOS silently replaces a notification that reuses a tag, so anything meant to alert needs
+// its own tag. Only the pinned summary is allowed to reuse one.
+$alerting = array_filter($sent, fn($p) => $p['kind'] !== 'pin');
+$tags = array_column($alerting, 'tag');
+check(count($tags) === count(array_unique($tags)), 'every alerting push has its own tag: ' . (count($tags) - count(array_unique($tags))) . ' reused');
+$pinTags = array_unique(array_column(array_filter($sent, fn($p) => $p['kind'] === 'pin'), 'tag'));
+check(count($pinTags) <= 1, 'the pinned card keeps one tag: ' . count($pinTags));
 
 echo "total pushes: " . count($sent) . "\n";
 $by = [];

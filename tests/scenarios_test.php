@@ -39,7 +39,7 @@ echo "Kuwait " . $date . ": " . implode('  ', array_map(fn($p) => ucfirst($p) . 
 echo "--- installed at 18:00 (the Fajr-at-6pm case) ---\n";
 $s = run_day($date, '18:00', '21:30');
 $stale = array_values(array_filter($s, fn($p) => in_array($p['kind'], ['missed', 'qada'], true)
-    && in_array($p['tag'], ['prayer-fajr', 'prayer-dhuhr', 'prayer-asr'], true)));
+    && in_array($p['group'], ['prayer-fajr', 'prayer-dhuhr', 'prayer-asr'], true)));
 check(count($stale) === 0, 'nothing about Fajr, Dhuhr or Asr after the install: ' . count($stale)
     . ($stale ? ' (' . implode('; ', array_map(fn($p) => hm($p['ts']) . ' ' . $p['title'], $stale)) . ')' : ''));
 $names = array_values(array_unique(array_map(fn($p) => $p['title'], array_filter($s, fn($p) => $p['kind'] === 'pulse'))));

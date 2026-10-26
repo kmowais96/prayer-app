@@ -93,8 +93,12 @@ function notify(string $kind, string $tag, string $title, array $ctx, int $tier,
         $body = $body !== '' ? $body . "\n" . $b : $b;
         quote_mark_sent($q['id'], $kind, $tier, $now);
     }
+    // iOS ignores `renotify`, so a push that reuses a tag replaces the old card silently:
+    // no sound, no banner, nothing he would notice. Only the pinned summary wants that.
+    // Everything meant to interrupt gets its own tag so the phone actually alerts.
     $payload = [
-        'title' => $title, 'body' => $body, 'tag' => $tag, 'kind' => $kind, 'tier' => $tier,
+        'title' => $title, 'body' => $body, 'kind' => $kind, 'tier' => $tier,
+        'tag' => empty($o['replace']) ? $tag . '-' . $now : $tag, 'group' => $tag,
         'url' => $o['url'] ?? '/#/today', 'qid' => $q['id'] ?? null, 'ts' => $now,
     ];
     $sent = push_all($payload, $o['ttl'] ?? 600);
@@ -438,7 +442,7 @@ function tick_pinned(int $now, string $date): void
     $dirty = (int) $day['pin_dirty'] === 1 && $now >= (int) $day['pin_last'] + 120;
     if (!$dirty && $now < (int) $day['pin_last'] + $every) return;
     $s = today_summary($date, $now);
-    notify('pin', 'today', $s['title'], ['time', 'deeds', 'dunya'], 1, ['essential' => true, 'body' => $s['line'], 'ttl' => 3600]);
+    notify('pin', 'today', $s['title'], ['time', 'deeds', 'dunya'], 1, ['essential' => true, 'replace' => true, 'body' => $s['line'], 'ttl' => 3600]);
     day_set($date, ['pin_last' => $now, 'pin_dirty' => 0]);
 }
 
